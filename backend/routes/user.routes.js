@@ -1,0 +1,13 @@
+import { Router } from "express";
+import UserControllers from "../controllers/user.controllers.js";
+import upload from "../config/multer.config.js";
+import AuthToken from "../middlewares/user.middleware.js";
+const router = Router();
+const userControllers = new UserControllers();
+router.post("/signup", upload.single("avatar"), userControllers.signUp);
+router.get("/userLists", userControllers.userLists);
+router.get("/user", userControllers.user);
+router.get("/messages/:receiverId", AuthToken, userControllers.fetchMessage);
+router.get("/messageHeader/:id", AuthToken, userControllers.messageHeader);
+router.post("/userSearch", AuthToken, userControllers.userSearch);
+export default router;
