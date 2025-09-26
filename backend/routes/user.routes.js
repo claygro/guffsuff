@@ -10,4 +10,6 @@ router.get("/user", userControllers.user);
 router.get("/messages/:receiverId", AuthToken, userControllers.fetchMessage);
 router.get("/messageHeader/:id", AuthToken, userControllers.messageHeader);
 router.post("/userSearch", AuthToken, userControllers.userSearch);
+router.get("/friendRequest/:id", AuthToken, userControllers.friendRequest);
+router.get("/senderRequest", AuthToken, userControllers.senderRequest);
 export default router;

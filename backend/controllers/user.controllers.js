@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import UserModel from "../models/user.models.js";
 import MessageModels from "../models/message.models.js";
 import "dotenv/config";
+import FriendRequestModel from "../models/friendRequest.models.js";
 class UserControllers {
   async signUp(req, res) {
     const { username, email, password } = req.body;
@@ -87,6 +88,7 @@ class UserControllers {
       console.log(`Error in user ${error}`);
     }
   }
+  //getting message
   async fetchMessage(req, res) {
     const { userid } = req.user;
 
@@ -134,6 +136,48 @@ class UserControllers {
       res.status(200).json(response);
     } catch (error) {
       console.log(`Error in searching user ${error}`);
+    }
+  }
+  // friend request.
+  async friendRequest(req, res) {
+    const { id } = req.params;
+    const { userid } = req.user;
+    try {
+      //for checking user has already send request or not.
+      const existingRequest = await FriendRequestModel.findOne({
+        senderId: userid,
+        receiverId: id,
+      });
+      if (existingRequest) {
+        return res
+          .status(403)
+          .json({ message: "You already sent friend request" });
+      }
+      const newRequest = await FriendRequestModel.create({
+        senderId: userid,
+        receiverId: id,
+      });
+
+      res.status(200).json(newRequest);
+    } catch (error) {
+      console.log(`Error in friend request ${error}`);
+    }
+  }
+  // fetching sender request.
+  async senderRequest(req, res) {
+    const { userid } = req.user;
+    try {
+      const response = await FriendRequestModel.find({
+        senderId: userid,
+      }).populate("senderId");
+      if (!response) {
+        return res
+          .status(404)
+          .json({ message: "You havenot send friend request to other" });
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(`Error in fetching sender request ${error}`);
     }
   }
 }

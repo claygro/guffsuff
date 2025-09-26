@@ -27,7 +27,7 @@ const UserList = () => {
   const { id: activeChatUserId } = useParams(); // Get userId from URL for active chat
 
   const [userLists, setUserLists] = useState<UserListType[]>([]);
-  const [userDetails, setUserDetails] = useState<LoggedInUser | null>(null);
+  const [userDetails, setUserDetails] = useState<LoggedInUser | null>(null); //store current user details.
   const [userSearch, setUserSearch] = useState<string>("");
 
   // Fetch all users
@@ -88,6 +88,16 @@ const UserList = () => {
       console.log(`Error in searching the user: ${error}`);
     }
   };
+  // for friendRequest.
+
+  async function friendRequestSender(id: string) {
+    try {
+      const response = await connection.get(`/chat/friendRequest/${id}`);
+      console.log(response);
+    } catch (error) {
+      console.log(`Error in friend request ${error}`);
+    }
+  }
 
   return (
     <div className="flex flex-col h-screen justify-between bg-[#101818]">
@@ -131,6 +141,12 @@ const UserList = () => {
                 className="w-12 h-12 rounded-full"
               />
               <h1 className="text-white text-md">{user.username}</h1>
+              <button
+                type="button"
+                onClick={() => friendRequestSender(user._id)}
+              >
+                Add friend
+              </button>
             </div>
           );
         })}
