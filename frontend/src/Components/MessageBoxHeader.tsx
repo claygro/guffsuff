@@ -28,7 +28,7 @@ const MessageBoxHeader = ({ receiverId }: { receiverId: string }) => {
   // console.log(headerUser);
   return (
     <>
-      <div className="flex gap-3 items-center bg-[#193232] px-3 py-4">
+      <div className="flex gap-3 items-center bg-gray-800  px-3 py-4">
         {headerUser?.avatar ? (
           <img
             className="w-12 h-12 rounded-full"

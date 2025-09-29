@@ -34,7 +34,7 @@ class UserControllers {
       if (!passwordRegex.test(password)) {
         return res.status(403).json({
           message:
-            "Password must in 8 character and have one special character",
+            "Password must be 8 characters long and 1 special character.",
         });
       }
       bcrypt.genSalt(10, function (err, salt) {
@@ -169,7 +169,7 @@ class UserControllers {
     try {
       const response = await FriendRequestModel.find({
         senderId: userid,
-      }).populate("senderId");
+      }).populate("receiverId");
       if (!response) {
         return res
           .status(404)
@@ -178,6 +178,133 @@ class UserControllers {
       res.status(200).json(response);
     } catch (error) {
       console.log(`Error in fetching sender request ${error}`);
+    }
+  }
+  //receiver request.
+  async receiverRequest(req, res) {
+    const { id } = req.params;
+    // console.log(id);
+    try {
+      const response = await FriendRequestModel.find({
+        receiverId: id,
+      }).populate("senderId");
+      if (!response) {
+        return res.status(404).json({ message: "No request" });
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(`Error in receiver request ${error}`);
+    }
+  }
+  // request reject.
+  async requestReject(req, res) {
+    const { userid } = req.user;
+
+    try {
+      const response = await FriendRequestModel.findOneAndDelete({
+        receiverId: userid, // ensures only the receiver can delete
+      });
+
+      if (!response) {
+        return res.status(404).json({ message: "Friend request not found" });
+      }
+
+      res.status(200).json({ message: "Friend request rejected", response });
+    } catch (error) {
+      console.log(`Error in request reject ${error}`);
+      res.status(500).json({ message: "Server error" });
+    }
+  }
+  //accept request.
+  async acceptRequest(req, res) {
+    const { userid } = req.user;
+    try {
+      const response = await FriendRequestModel.findOneAndUpdate(
+        {
+          receiverId: userid,
+        },
+        { $set: { status: "Accepted" } },
+        { new: true }
+      );
+      if (!response) {
+        return res.status(404).json({ message: "No user found" });
+      }
+      res.status(200).json(response);
+    } catch (error) {
+      console.log(`Error in accept request ${error}`);
+    }
+  }
+  //all friend
+  async allFriend(req, res) {
+    const { userid } = req.user;
+    try {
+      const response = await FriendRequestModel.find({
+        status: "Accepted", // make sure case matches your schema
+        $or: [{ senderId: userid }, { receiverId: userid }],
+      })
+        .populate("receiverId")
+        .populate("senderId");
+      if (!response) {
+        res.status(404).json({ message: "No friends" });
+      }
+      const friends = response.map((req) => {
+        if (req.senderId._id == userid) {
+          return req.receiverId;
+        } else {
+          return req.senderId;
+        }
+      });
+      res.status(200).json(friends);
+    } catch (error) {
+      console.log(`Error in all friend ${error}`);
+    }
+  }
+  //for logout.
+  async logout(req, res) {
+    try {
+      await res.cookie("userToken", "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Use true for HTTPS
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // "None" for cross-origin
+        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiry time (30 days)
+      });
+      res.status(200).json({ message: "Logout successfully" });
+    } catch (error) {
+      console.log(`Error in logout ${error}`);
+    }
+  }
+  //login
+  async login(req, res) {
+    const { email, password } = req.body;
+    try {
+      const user = await UserModel.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ message: "Something went wrong" });
+      }
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result) {
+          res.status(200).json({ message: "Welcome" });
+        } else {
+          res.status(404).json({ message: "Something went wrong" });
+        }
+      });
+      let userToken = jwt.sign(
+        {
+          username: user.username,
+          email: email,
+          avatar: user.avatar,
+          userid: user._id,
+        },
+        process.env.JWT_SECRET_KEY
+      );
+      res.cookie("userToken", userToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Use true for HTTPS
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // "None" for cross-origin
+        maxAge: 30 * 24 * 60 * 60 * 1000, // Cookie expiry time (30 days)
+      });
+    } catch (error) {
+      console.log(`Error in login ${error}`);
     }
   }
 }

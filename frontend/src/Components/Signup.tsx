@@ -9,6 +9,7 @@ const Signup = () => {
   const [userSignup, setUserSignup] = useState({});
   const [avatar, setAvatar] = useState<File>();
   const [avatarPreview, setAvatarPreview] = useState<string>("");
+  const [errMsg, setErrMsg] = useState<string>("");
   const navigate = useNavigate();
   // Cropper modal states
   const [showCropper, setShowCropper] = useState(false);
@@ -57,8 +58,9 @@ const Signup = () => {
       setAvatarPreview("");
       localStorage.setItem("userChatDashboard", JSON.stringify(true));
       navigate("/layout");
-    } catch (error) {
+    } catch (error: any) {
       console.log(`Error in signup page ${error}`);
+      setErrMsg(`${error.response.data.message}`);
     }
   };
   useEffect(() => {
@@ -67,7 +69,7 @@ const Signup = () => {
       navigate("/layout");
     }
   });
-
+  console.log(errMsg);
   return (
     <>
       <div className="bg-[#1F2828] h-screen w-screen flex justify-around items-center">
@@ -102,9 +104,14 @@ const Signup = () => {
 
             {/* Username */}
             <div>
-              <label htmlFor="username" className="text-[#cacaca]">
+              <label htmlFor="username" className="text-[#cacaca] ">
                 UserName:
               </label>
+              {errMsg == "Username is already exist" ? (
+                <h1 className="text-red-400 ">{errMsg}</h1>
+              ) : (
+                <h1 className="pt-3 pb-3"> </h1>
+              )}
               <div className="bg-[#242c2c] w-96 px-2 py-2 rounded-lg ">
                 <input
                   type="text"
@@ -123,6 +130,12 @@ const Signup = () => {
               <label htmlFor="email" className="text-[#cacaca]">
                 Email:
               </label>
+              {errMsg == "Only gmail and yahoo is valid" ||
+              errMsg == "Email is already taken" ? (
+                <h1 className="text-red-400 ">{errMsg}</h1>
+              ) : (
+                <h1 className="pt-3 pb-3"> </h1>
+              )}
               <div className="bg-[#242c2c] w-96 px-2 py-2 rounded-lg ">
                 <input
                   type="email"
@@ -141,6 +154,12 @@ const Signup = () => {
               <label htmlFor="password" className="text-[#cacaca]">
                 Password:
               </label>
+              {errMsg ==
+              "Password must be 8 characters long and 1 special character." ? (
+                <h1 className="text-red-400 ">{errMsg}</h1>
+              ) : (
+                <h1 className="pt-3 pb-3"> </h1>
+              )}
               <div className="bg-[#242c2c] w-96 px-2 py-2 rounded-lg ">
                 <input
                   type="password"
@@ -158,6 +177,12 @@ const Signup = () => {
               Signup
             </button>
           </form>
+          <button
+            onClick={() => navigate("/login")}
+            className="text-blue-200 text-xl cursor-pointer hover:text-blue-400"
+          >
+            Already have an account? Login?
+          </button>
         </div>
 
         {/* Right-side Image */}
