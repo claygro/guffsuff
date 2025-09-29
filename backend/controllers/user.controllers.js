@@ -218,9 +218,11 @@ class UserControllers {
   //accept request.
   async acceptRequest(req, res) {
     const { userid } = req.user;
+    const { requestid } = req.params;
     try {
       const response = await FriendRequestModel.findOneAndUpdate(
         {
+          _id: requestid,
           receiverId: userid,
         },
         { $set: { status: "Accepted" } },

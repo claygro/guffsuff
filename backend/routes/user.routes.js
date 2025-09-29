@@ -14,7 +14,11 @@ router.get("/friendRequest/:id", AuthToken, userControllers.friendRequest);
 router.get("/senderRequest", AuthToken, userControllers.senderRequest);
 router.get("/reciverRequest/:id", AuthToken, userControllers.receiverRequest);
 router.get("/requestReject", AuthToken, userControllers.requestReject);
-router.put("/acceptRequest", AuthToken, userControllers.acceptRequest);
+router.put(
+  "/acceptRequest/:requestid",
+  AuthToken,
+  userControllers.acceptRequest
+);
 router.get("/allFriend", AuthToken, userControllers.allFriend);
 router.get("/logout", userControllers.logout);
 router.post("/login", userControllers.login);

@@ -5,7 +5,8 @@ import defaultUserAvatar from "../assets/user.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Requests from "./Requests";
-
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 interface UserListType {
   _id: string;
   avatar?: string;
@@ -116,8 +117,10 @@ const UserList = () => {
     try {
       const response = await connection.get(`/chat/friendRequest/${id}`);
       console.log(response);
-    } catch (error) {
+      toast.success("Friend request sent");
+    } catch (error: any) {
       console.error("Error sending friend request:", error);
+      toast.error(`${error.response.data.message}`);
     }
   };
 
@@ -162,13 +165,13 @@ const UserList = () => {
       console.log(`Error in rejection ${error}`);
     }
   };
-  const handleAccept = async (requestId: string, senderId: string) => {
+  const handleAccept = async (requestid: string, senderId: string) => {
     try {
       // setFilterRequest((prev) => prev.filter((req) => req._id !== _id));
-      await connection.put(`/chat/acceptRequest`);
+      await connection.put(`/chat/acceptRequest/${requestid}`);
       setFilterRequest((prev) =>
         prev.map((req) =>
-          req._id === requestId ? { ...req, status: "accepted" } : req
+          req._id === requestid ? { ...req, status: "accepted" } : req
         )
       );
       setAccepted((prev) => [...prev, senderId]);
@@ -195,6 +198,12 @@ const UserList = () => {
     <div className="flex flex-col h-screen justify-between bg-[#101818]">
       <div className="overflow-y-auto p-2">
         {/* Search */}
+        <Toaster
+          toastOptions={{
+            style: { background: "white", color: "black" },
+          }}
+          position="top-center"
+        />
         <form
           onSubmit={handleSearch}
           className="flex items-center justify-between"
@@ -212,6 +221,7 @@ const UserList = () => {
         </form>
 
         {/* Tabs */}
+
         <Requests onTabClick={handleTabClick} />
 
         {/* Content */}
@@ -240,6 +250,7 @@ const UserList = () => {
                     className="w-12 h-12 rounded-full"
                   />
                   <h1 className="text-white text-md">{user.username}</h1>
+
                   {!accepted.includes(user._id) && (
                     <button
                       type="button"
@@ -268,7 +279,7 @@ const UserList = () => {
                       onClick={() =>
                         navigate(`/layout/messageBox/${friend._id}`)
                       }
-                      className={`flex items-center gap-3 p-2 m-2 rounded-xl cursor-pointer hover:bg-[#1f2a2a] ${
+                      className={`flex items-center  gap-3 p-2 m-2 rounded-xl cursor-pointer hover:bg-[#1f2a2a] ${
                         friend._id === activeChatUserId
                           ? "bg-blue-700"
                           : "bg-[#172121]"
@@ -284,8 +295,10 @@ const UserList = () => {
                         className="w-12 h-12 rounded-full"
                       />
 
-                      <div className="flex-grow">
-                        <h1 className="text-white">{friend.username}</h1>
+                      <div className="flex-grow hidden sm:flex">
+                        <h1 className="text-white text-2xl">
+                          {friend.username}
+                        </h1>
                       </div>
                     </div>
                   )
@@ -394,7 +407,7 @@ const UserList = () => {
 
       {/* Logged-in User */}
       <div className="p-4 flex justify-center">
-        <div className="bg-gray-800 rounded-lg flex gap-5 items-center  px-5 py-2">
+        <div className="bg-gray-800 rounded-lg   gap-5 flex items-center  px-5 py-2 ">
           <img
             src={
               userDetails?.avatar
@@ -402,14 +415,14 @@ const UserList = () => {
                 : defaultUserAvatar
             }
             alt={userDetails?.username}
-            className="w-12 h-12 rounded-full"
+            className="w-12  h-12 rounded-full"
           />
-          <div className="text-white">
+          <div className="text-white ">
             <h1 className="font-semibold">{userDetails?.username}</h1>
             <h1 className="text-sm">{userDetails?.email}</h1>
           </div>
           <button
-            className="bg-gray-600 px-3 py-1 text-xl text-white rounded-lg"
+            className="bg-gray-600 mt-2 px-3 py-1 text-xl text-white rounded-lg"
             onClick={handleLogout}
           >
             logout

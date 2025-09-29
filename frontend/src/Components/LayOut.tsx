@@ -3,8 +3,8 @@ import UserList from "./UserList";
 
 const LayOut = () => {
   return (
-    <div className="flex h-screen bg-[#131e1e]">
-      <div className="w-[400px] bg-[#242b2b]">
+    <div className="flex h-screen  bg-[#131e1e]">
+      <div className="w-[400px]  bg-[#242b2b]">
         <UserList />
       </div>
       <div className="flex-1">
