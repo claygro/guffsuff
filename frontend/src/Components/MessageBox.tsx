@@ -88,7 +88,7 @@ const MessageBox = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#0f1a1a]">
+    <div className="flex w-full flex-col h-screen bg-[#0f1a1a]">
       {/* Messages */}
       <div>
         <MessageBoxHeader receiverId={receiverId} />

@@ -295,7 +295,7 @@ const UserList = () => {
                         className="w-12 h-12 rounded-full"
                       />
 
-                      <div className="flex-grow hidden sm:flex">
+                      <div className="flex-grow  ">
                         <h1 className="text-white text-2xl">
                           {friend.username}
                         </h1>
@@ -406,8 +406,8 @@ const UserList = () => {
       </div>
 
       {/* Logged-in User */}
-      <div className="p-4 flex justify-center">
-        <div className="bg-gray-800 rounded-lg   gap-5 flex items-center  px-5 py-2 ">
+      <div className="p-4 flex   justify-center  ">
+        <div className="rounded-lg py-4 px-2 bg-gray-800   gap-5 flex items-center  ">
           <img
             src={
               userDetails?.avatar
