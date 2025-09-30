@@ -6,7 +6,9 @@ import connection from "../config/Connection.config";
 import { jwtDecode } from "jwt-decode";
 import MessageBoxHeader from "./MessageBoxHeader";
 
-const socket = io("http://localhost:8000", { withCredentials: true });
+const socket = io("https://guffsuff-backend.onrender.com", {
+  withCredentials: true,
+});
 
 interface Message {
   _id: string;
