@@ -5,7 +5,7 @@ import defaultUserAvatar from "../assets/user.png";
 import { useNavigate, useParams } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import Requests from "./Requests";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/Components/ui/sonner";
 import { toast } from "sonner";
 interface UserListType {
   _id: string;
@@ -21,15 +21,13 @@ interface LoggedInUser {
   email: string;
 }
 
-interface UserSearchType {
-  username: string;
-}
-
 interface FriendRequestType {
   _id: string;
   senderId: UserListType; // populated from backend
   receiverId: UserListType; // populated from backend
   status: "pending" | "accepted" | "rejected";
+  avatar: string;
+  username: string;
 }
 
 const UserList = () => {
@@ -44,7 +42,7 @@ const UserList = () => {
   >("allFriend");
   const [filterRequest, setFilterRequest] = useState<FriendRequestType[]>([]);
   const [accepted, setAccepted] = useState<string[]>([]);
-  const [rejected, setRejected] = useState<string[]>([]);
+
   // Fetch all users
   const fetchUsers = async () => {
     try {
@@ -157,7 +155,7 @@ const UserList = () => {
 
   const shouldShowUserDiscovery = userSearch.length > 0;
   //for reject.
-  const handleReject = async (_id) => {
+  const handleReject = async (_id: any) => {
     try {
       setFilterRequest((prev) => prev.filter((req) => req._id !== _id));
       await connection.get(`/chat/requestReject`);

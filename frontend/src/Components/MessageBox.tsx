@@ -11,13 +11,11 @@ const socket = io("http://localhost:8000", { withCredentials: true });
 interface Message {
   _id: string;
   senderId: string;
-  receiverId: string;
+  receiverId: string | undefined;
   text: string;
   createdAt: string;
 }
-interface Id {
-  receiveId: string;
-}
+
 const MessageBox = () => {
   const { id: receiverId } = useParams();
   const [messages, setMessages] = useState<Message[]>([]);

@@ -1,4 +1,4 @@
-const Requests = ({ onTabClick }) => {
+const Requests = ({ onTabClick }: { onTabClick: any }) => {
   return (
     <>
       <div className="flex justify-between  items-center">
