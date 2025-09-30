@@ -1,2 +1,2 @@
-const backendUrl = "http://localhost:8000";
+const backendUrl = "https://guffsuff-backend.onrender.com";
 export default backendUrl;

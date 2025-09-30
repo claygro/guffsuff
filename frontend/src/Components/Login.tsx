@@ -97,7 +97,7 @@ const Login = () => {
             onClick={() => navigate("/")}
             className="text-blue-200 text-xl cursor-pointer hover:text-blue-400"
           >
-            Donot have an account? Singup?
+            Donot have an account? Signup?
           </button>
         </div>
 
