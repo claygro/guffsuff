@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import connection from "../config/Connection.config";
 import backendUrl from "../config/BackendUrl";
 
-const MessageBoxHeader = ({ receiverId }: { receiverId: string }) => {
+const MessageBoxHeader = ({ receiverId }: { receiverId?: string }) => {
   interface UserHeader {
     avatar: string;
     username: string;
